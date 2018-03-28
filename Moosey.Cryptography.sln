@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2015
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moosey.Cryptography", "Moosey.Cryptography\Moosey.Cryptography.csproj", "{30B90EB3-B8C9-4480-96F3-E620718B71AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moosey.Cryptography.Example", "Moosey.Cryptography.Example\Moosey.Cryptography.Example.csproj", "{6BF6BA5C-19B0-44B5-B52F-2FCE20605C89}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{30B90EB3-B8C9-4480-96F3-E620718B71AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30B90EB3-B8C9-4480-96F3-E620718B71AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30B90EB3-B8C9-4480-96F3-E620718B71AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30B90EB3-B8C9-4480-96F3-E620718B71AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BF6BA5C-19B0-44B5-B52F-2FCE20605C89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BF6BA5C-19B0-44B5-B52F-2FCE20605C89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BF6BA5C-19B0-44B5-B52F-2FCE20605C89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BF6BA5C-19B0-44B5-B52F-2FCE20605C89}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3AEFA688-D567-4E6A-B1F6-F337718F6C60}
+	EndGlobalSection
+EndGlobal
