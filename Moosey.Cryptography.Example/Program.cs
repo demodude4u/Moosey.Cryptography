@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Runtime.InteropServices;
+using Moosey.Cryptography.BCrypt;
 
 namespace Moosey.Cryptography.Example
 {

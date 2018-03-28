@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Moosey.Cryptography
+namespace Moosey.Cryptography.BCrypt
 {
     public static class BCryptCore
     {
