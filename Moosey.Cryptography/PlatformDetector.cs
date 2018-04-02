@@ -22,12 +22,30 @@
  * SOFTWARE.
 */
 
+using System.Runtime.InteropServices;
+
 namespace Moosey.Cryptography
 {
-    public interface IAlgorithmTransformer
+    internal static class PlatformDetector
     {
-        void TransformBlock(byte[] input, int inputOffset, int count);
-
-        byte[] TransformFinalBlock(byte[] input, int offset, int count);
+        public static OperatingPlatform GetCurrentPlatform()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return OperatingPlatform.Windows;
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                return OperatingPlatform.Linux;
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                return OperatingPlatform.Mac;
+            }
+            else
+            {
+                return OperatingPlatform.Unknown;
+            }
+        }
     }
 }

@@ -24,10 +24,10 @@
 
 namespace Moosey.Cryptography
 {
-    public interface ISymmetricAlgorithm
+    public interface IStreamCipher
     {
-        IAlgorithmTransformer CreateEncryptor(byte[] key);
+        IBlockTransformer CreateEncryptor(byte[] key);
 
-        IAlgorithmTransformer CreateDecryptor(byte[] key);
+        IBlockTransformer CreateDecryptor(byte[] key);
     }
 }

@@ -24,13 +24,11 @@
 
 namespace Moosey.Cryptography
 {
-    public interface IBlockAlgorithm : ISymmetricAlgorithm
+    public enum BlockCipherMode
     {
-        int BlockSize
-        {
-            get;
-        }
-
-        void SetBlockSize(int blockSize);
+        ECB,
+        CBC,
+        CTR,
+        GCM
     }
 }
