@@ -30,17 +30,13 @@ namespace Moosey.Cryptography.BCrypt
 {
     public class BCryptAesTransformer : IBlockTransformer
     {
-        public int InputBlockSize
-        {
-            get;
-            private set;
-        }
+        public int InputBlockSize => 16;
 
         public int OutputBlockSize => 16;
 
-        public BCryptAesTransformer(byte[] key, byte[] iv, int blockSize)
+        public BCryptAesTransformer(byte[] key, byte[] iv)
         {
-            throw new NotImplementedException();
+
         }
 
         public void TransformBlock(byte[] input, int offset, int count)

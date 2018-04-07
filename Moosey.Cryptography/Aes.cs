@@ -31,11 +31,7 @@ namespace Moosey.Cryptography
 {
     public class Aes : IBlockCipher
     {
-        public int BlockSize
-        {
-            get;
-            private set;
-        }
+        public int BlockSize => 16;
 
         public Aes()
         {
@@ -47,7 +43,7 @@ namespace Moosey.Cryptography
             switch (PlatformDetector.GetCurrentPlatform())
             {
                 case OperatingPlatform.Windows:
-                    return new BCryptAesTransformer(key, iv, this.BlockSize);
+                    return new BCryptAesTransformer(key, iv);
 
                 default:
                     throw new PlatformNotSupportedException("The current system platform is not supported.");
@@ -59,7 +55,7 @@ namespace Moosey.Cryptography
             switch (PlatformDetector.GetCurrentPlatform())
             {
                 case OperatingPlatform.Windows:
-                    return new BCryptAesTransformer(key, iv, this.BlockSize);
+                    return new BCryptAesTransformer(key, iv);
 
                 default:
                     throw new PlatformNotSupportedException("The current system platform is not supported.");
@@ -68,7 +64,13 @@ namespace Moosey.Cryptography
 
         public void SetBlockSize(int blockSize)
         {
+            // We'll support setting the block size, but not really.
+            // AES only supports 128-bit block sizes. This isn't Rijndael!
 
+            if (blockSize != 16)
+            {
+                throw new ArgumentException("The block size must be exactly 16 bytes.");
+            }
         }
     }
 }

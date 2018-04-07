@@ -44,6 +44,9 @@ namespace Moosey.Cryptography.Example
 
             ulong pcbResult;
             BCryptCore.BCryptEncrypt(key, plaintext, (ulong)plaintext.Length, IntPtr.Zero, null, 0, ciphertext, (ulong)ciphertext.Length, out pcbResult, 0);
+
+            Aes aes = new Aes();
+            IBlockTransformer encryptor = aes.CreateEncryptor(secret, null);
         }
     }
 }
