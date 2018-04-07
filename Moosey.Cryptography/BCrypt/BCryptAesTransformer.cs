@@ -30,21 +30,44 @@ namespace Moosey.Cryptography.BCrypt
 {
     public class BCryptAesTransformer : IBlockTransformer
     {
+        private readonly IntPtr hAlgorithmProvider;
+        private readonly IntPtr hKey;
+        private readonly byte[] iv;
+        private readonly bool isEncrypting;
+
         public int InputBlockSize => 16;
 
         public int OutputBlockSize => 16;
 
-        public BCryptAesTransformer(byte[] key, byte[] iv)
+        public BCryptAesTransformer(BlockCipherMode mode, byte[] key, byte[] iv, bool isEncrypting)
         {
+            uint result = BCryptCore.BCryptOpenAlgorithmProvider(out this.hAlgorithmProvider, "AES", null, 0);
+            if (result != 0)
+            {
+                throw new SystemException("An error was encountered while opening the algorithm provider.");
+            }
 
+            result = BCryptCore.BCryptGenerateSymmetricKey(this.hAlgorithmProvider, out this.hKey, null, 0, key, (ulong)key.Length, 0);
+            if (result != 0)
+            {
+                throw new SystemException("An error was encountered while generating a symmetric key.");
+            }
+
+            this.iv = iv;
+            this.isEncrypting = isEncrypting;
         }
 
-        public void TransformBlock(byte[] input, int offset, int count)
+        public void TransformBlock(byte[] input, int inputOffset, byte[] output, int outputOffset, int count)
         {
-            throw new NotImplementedException();
+            ulong pcbResult;
+
+            if (this.isEncrypting)
+            {
+                BCryptCore.BCryptEncrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, (ulong)this.iv.Length, output, (ulong)output.Length, out pcbResult, 0);
+            }
         }
 
-        public byte[] TransformFinalBlock(byte[] input, int offset, int count)
+        public byte[] TransformFinalBlock(byte[] input, int inputOffset, byte[] output, int outputOffset, int count)
         {
             throw new NotImplementedException();
         }

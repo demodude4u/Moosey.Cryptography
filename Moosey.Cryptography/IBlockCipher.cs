@@ -33,8 +33,8 @@ namespace Moosey.Cryptography
 
         void SetBlockSize(int blockSize);
 
-        IBlockTransformer CreateEncryptor(byte[] key, byte[] iv);
+        IBlockTransformer CreateEncryptor(BlockCipherMode mode, byte[] key, byte[] iv);
 
-        IBlockTransformer CreateDecryptor(byte[] key, byte[] iv);
+        IBlockTransformer CreateDecryptor(BlockCipherMode mode, byte[] key, byte[] iv);
     }
 }

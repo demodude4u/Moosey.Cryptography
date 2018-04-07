@@ -46,7 +46,7 @@ namespace Moosey.Cryptography.Example
             BCryptCore.BCryptEncrypt(key, plaintext, (ulong)plaintext.Length, IntPtr.Zero, null, 0, ciphertext, (ulong)ciphertext.Length, out pcbResult, 0);
 
             Aes aes = new Aes();
-            IBlockTransformer encryptor = aes.CreateEncryptor(secret, null);
+            IBlockTransformer encryptor = aes.CreateEncryptor(BlockCipherMode.ECB, secret, null);
         }
     }
 }

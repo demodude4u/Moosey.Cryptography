@@ -36,8 +36,8 @@ namespace Moosey.Cryptography
             get;
         }
 
-        void TransformBlock(byte[] input, int offset, int count);
+        void TransformBlock(byte[] input, int inputOffset, byte[] output, int outputOffset, int count);
 
-        byte[] TransformFinalBlock(byte[] input, int offset, int count);
+        byte[] TransformFinalBlock(byte[] input, int inputOffset, byte[] output, int outputOffset, int count);
     }
 }

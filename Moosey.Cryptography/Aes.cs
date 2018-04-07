@@ -38,24 +38,24 @@ namespace Moosey.Cryptography
 
         }
 
-        public IBlockTransformer CreateEncryptor(byte[] key, byte[] iv)
+        public IBlockTransformer CreateEncryptor(BlockCipherMode mode, byte[] key, byte[] iv)
         {
             switch (PlatformDetector.GetCurrentPlatform())
             {
                 case OperatingPlatform.Windows:
-                    return new BCryptAesTransformer(key, iv);
+                    return new BCryptAesTransformer(mode, key, iv, true);
 
                 default:
                     throw new PlatformNotSupportedException("The current system platform is not supported.");
             }
         }
 
-        public IBlockTransformer CreateDecryptor(byte[] key, byte[] iv)
+        public IBlockTransformer CreateDecryptor(BlockCipherMode mode, byte[] key, byte[] iv)
         {
             switch (PlatformDetector.GetCurrentPlatform())
             {
                 case OperatingPlatform.Windows:
-                    return new BCryptAesTransformer(key, iv);
+                    return new BCryptAesTransformer(mode, key, iv, false);
 
                 default:
                     throw new PlatformNotSupportedException("The current system platform is not supported.");
