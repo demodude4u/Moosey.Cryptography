@@ -47,6 +47,9 @@ namespace Moosey.Cryptography.Example
 
             Aes aes = new Aes();
             IBlockTransformer encryptor = aes.CreateEncryptor(BlockCipherMode.ECB, secret, null);
+
+            byte[] ciphertext2 = new byte[plaintext.Length];
+            encryptor.TransformBlock(plaintext, 0, ciphertext2, 0, ciphertext2.Length);
         }
     }
 }

@@ -60,10 +60,11 @@ namespace Moosey.Cryptography.BCrypt
         public void TransformBlock(byte[] input, int inputOffset, byte[] output, int outputOffset, int count)
         {
             ulong pcbResult;
+            ulong ivLength = this.iv == null ? 0 : (ulong)this.iv.Length;
 
             if (this.isEncrypting)
             {
-                BCryptCore.BCryptEncrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, (ulong)this.iv.Length, output, (ulong)output.Length, out pcbResult, 0);
+                BCryptCore.BCryptEncrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, ivLength, output, (ulong)output.Length, out pcbResult, 0);
             }
         }
 
