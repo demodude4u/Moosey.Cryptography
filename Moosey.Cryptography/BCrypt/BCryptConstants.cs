@@ -24,9 +24,20 @@
 
 namespace Moosey.Cryptography.BCrypt
 {
-    // https://msdn.microsoft.com/en-us/library/windows/desktop/aa376211(v=vs.85).aspx
     public static class BCryptConstants
     {
+        /*
+         * Algorithm Identifiers
+         * Source: https://msdn.microsoft.com/en-us/library/windows/desktop/aa375534(v=vs.85).aspx
+        */
+        public const string BCRYPT_AES_ALGORITHM = "AES";
+        public const string BCRYPT_AES_CMAC_ALGORITHM = "AES-CMAC";
+        public const string BCRYPT_AES_GMAC_ALGORITHM = "AES-GMAC";
+
+        /*
+         * Cryptography Primitive Property Identifiers
+         * Source: https://msdn.microsoft.com/en-us/library/windows/desktop/aa376211(v=vs.85).aspx
+        */
         public const string BCRYPT_ALGORITHM_NAME = "AlgorithmName";
         public const string BCRYPT_AUTH_TAG_LENGTH = "AuthTagLength";
         public const string BCRYPT_BLOCK_LENGTH = "BlockLength";
