@@ -63,6 +63,11 @@ namespace Moosey.Cryptography.BCrypt
             [In] ulong cbSecret,
             [In] ulong dwFlags);
 
+        // https://msdn.microsoft.com/en-us/library/windows/desktop/aa375404(v=vs.85).aspx
+        [DllImport("bcrypt.dll")]
+        public static extern uint BCryptDestroyKey(
+            [In] IntPtr hKey);
+
         // https://msdn.microsoft.com/en-us/library/windows/desktop/aa375421(v=vs.85).aspx
         [DllImport("bcrypt.dll")]
         public static extern uint BCryptEncrypt(
