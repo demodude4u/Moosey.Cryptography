@@ -70,5 +70,11 @@ namespace Moosey.Cryptography.BCrypt
         public const uint BCRYPT_SUPPORTED_PAD_PSS = 0x00000010;
         public const string BCRYPT_PROVIDER_HANDLE = "ProviderHandle";
         public const string BCRYPT_SGINATURE_LENGTH = "SignatureLength";
+
+        /* 
+         * BCrypt Flags
+         * Source: Windows 10 SDK: ./include/10.0.10240.0/shared/bcrypt.h
+        */
+        public const ulong BCRYPT_BLOCK_PADDING = 0x00000001;
     }
 }

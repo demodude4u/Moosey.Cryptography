@@ -66,11 +66,25 @@ namespace Moosey.Cryptography.BCrypt
             {
                 BCryptCore.BCryptEncrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, ivLength, output, (ulong)output.Length, out pcbResult, 0);
             }
+            else
+            {
+                BCryptCore.BCryptDecrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, ivLength, output, (ulong)output.Length, out pcbResult, 0);
+            }
         }
 
-        public byte[] TransformFinalBlock(byte[] input, int inputOffset, byte[] output, int outputOffset, int count)
+        public void TransformFinalBlock(byte[] input, int inputOffset, byte[] output, int outputOffset, int count)
         {
-            throw new NotImplementedException();
+            ulong pcbResult;
+            ulong ivLength = this.iv == null ? 0 : (ulong)this.iv.Length;
+
+            if (this.isEncrypting)
+            {
+                BCryptCore.BCryptEncrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, ivLength, output, (ulong)output.Length, out pcbResult, BCryptConstants.BCRYPT_BLOCK_PADDING);
+            }
+            else
+            {
+                BCryptCore.BCryptDecrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, ivLength, output, (ulong)output.Length, out pcbResult, BCryptConstants.BCRYPT_BLOCK_PADDING);
+            }
         }
     }
 }
