@@ -76,5 +76,18 @@ namespace Moosey.Cryptography.BCrypt
             [In] ulong cbOutput,
             [Out] out ulong pcbReesult,
             [In] ulong dwFlags);
+
+        // https://msdn.microsoft.com/en-us/library/windows/desktop/aa375391(v=vs.85).aspx
+        public static extern uint BCryptDecrypt(
+            [In] IntPtr hKey,
+            [In] byte[] pbInput,
+            [In] ulong cbInput,
+            [In] IntPtr pPaddingInfo,
+            [In, Out] byte[] pvIv,
+            [In] ulong cbIv,
+            [Out] byte[] pbOutput,
+            [In] ulong cbOutput,
+            [Out] out ulong pcbReesult,
+            [In] ulong dwFlags);
     }
 }
