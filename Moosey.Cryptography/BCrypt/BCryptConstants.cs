@@ -75,6 +75,7 @@ namespace Moosey.Cryptography.BCrypt
          * BCrypt Flags
          * Source: Windows 10 SDK: ./include/10.0.10240.0/shared/bcrypt.h
         */
+        public const ulong BCRYPT_NO_PADDING = 0x00000000;
         public const ulong BCRYPT_BLOCK_PADDING = 0x00000001;
     }
 }

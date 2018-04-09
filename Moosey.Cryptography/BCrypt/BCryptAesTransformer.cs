@@ -57,6 +57,17 @@ namespace Moosey.Cryptography.BCrypt
             this.isEncrypting = isEncrypting;
         }
 
+        ~BCryptAesTransformer()
+        {
+            this.Dispose(false);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            BCryptCore.BCryptDestroyKey(this.hKey);
+            BCryptCore.BCryptCloseAlgorithmProvider(this.hAlgorithmProvider, 0);
+        }
+
         public void TransformBlock(byte[] input, int inputOffset, byte[] output, int outputOffset, int count)
         {
             ulong pcbResult;
@@ -64,11 +75,11 @@ namespace Moosey.Cryptography.BCrypt
 
             if (this.isEncrypting)
             {
-                BCryptCore.BCryptEncrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, ivLength, output, (ulong)output.Length, out pcbResult, 0);
+                BCryptCore.BCryptEncrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, ivLength, output, (ulong)output.Length, out pcbResult, BCryptConstants.BCRYPT_NO_PADDING);
             }
             else
             {
-                BCryptCore.BCryptDecrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, ivLength, output, (ulong)output.Length, out pcbResult, 0);
+                BCryptCore.BCryptDecrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, ivLength, output, (ulong)output.Length, out pcbResult, BCryptConstants.BCRYPT_NO_PADDING);
             }
         }
 
@@ -85,6 +96,12 @@ namespace Moosey.Cryptography.BCrypt
             {
                 BCryptCore.BCryptDecrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, ivLength, output, (ulong)output.Length, out pcbResult, BCryptConstants.BCRYPT_BLOCK_PADDING);
             }
+        }
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }
