@@ -124,16 +124,19 @@ namespace Moosey.Cryptography.BCrypt
 
             if (this.isEncrypting)
             {
-                BCryptCore.BCryptEncrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, ivLength, output, (ulong)output.Length, out pcbResult, BCryptConstants.BCRYPT_NO_PADDING);
+                uint result = BCryptCore.BCryptEncrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, ivLength, output, (ulong)output.Length, out pcbResult, BCryptConstants.BCRYPT_NO_PADDING);
+                if (result != 0)
+                {
+                    throw new SystemException("An error was encountered during encryption.");
+                }
             }
             else
             {
-                BCryptCore.BCryptDecrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, ivLength, output, (ulong)output.Length, out pcbResult, BCryptConstants.BCRYPT_NO_PADDING);
-            }
-
-            if (pcbResult != 0)
-            {
-
+                uint result = BCryptCore.BCryptDecrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, ivLength, output, (ulong)output.Length, out pcbResult, BCryptConstants.BCRYPT_NO_PADDING);
+                if (result != 0)
+                {
+                    throw new SystemException("An error was encountered during decryption.");
+                }
             }
         }
 
