@@ -28,24 +28,31 @@ namespace Moosey.Cryptography
 {
     internal static class PlatformDetector
     {
+        private static OperatingPlatform? operatingPlatform = null;
+
         public static OperatingPlatform GetCurrentPlatform()
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (!operatingPlatform.HasValue)
             {
-                return OperatingPlatform.Windows;
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    operatingPlatform = OperatingPlatform.Windows;
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    operatingPlatform = OperatingPlatform.Linux;
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    operatingPlatform = OperatingPlatform.Mac;
+                }
+                else
+                {
+                    operatingPlatform = OperatingPlatform.Unknown;
+                }
             }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                return OperatingPlatform.Linux;
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                return OperatingPlatform.Mac;
-            }
-            else
-            {
-                return OperatingPlatform.Unknown;
-            }
+
+            return operatingPlatform.Value;
         }
     }
 }
