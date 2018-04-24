@@ -26,9 +26,11 @@ namespace Moosey.Cryptography
 {
     public enum BlockCipherMode
     {
-        ECB,
+        Unspecified,
         CBC,
-        CTR,
+        CCM,
+        CFB,
+        ECB,
         GCM
     }
 }

@@ -36,6 +36,7 @@ namespace Moosey.Cryptography.Example
 
             IntPtr key;
             byte[] secret = new byte[16];
+            byte[] iv = new byte[16];
             result = BCryptCore.BCryptGenerateSymmetricKey(algorithm, out key, null, 0, secret, (ulong)secret.Length, 0);
 
             byte[] plaintext = new byte[] { 0x6a, 0x84, 0x86, 0x7c, 0xd7, 0x7e, 0x12, 0xad, 0x07, 0xea, 0x1b, 0xe8, 0x95, 0xc5, 0x3f, 0xa3 };
@@ -48,8 +49,7 @@ namespace Moosey.Cryptography.Example
             Aes aes = new Aes();
             IBlockTransformer encryptor = aes.CreateEncryptor(BlockCipherMode.ECB, secret, null);
 
-            byte[] ciphertext2 = new byte[plaintext.Length];
-            encryptor.TransformBlock(plaintext, 0, ciphertext2, 0, ciphertext2.Length);
+            byte[] ciphertext2 = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
         }
     }
 }

@@ -23,13 +23,13 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Runtime.InteropServices;
 
 namespace Moosey.Cryptography.BCrypt
 {
     public class BCryptAesTransformer : IBlockTransformer
     {
+        private readonly BlockCipherMode mode;
         private readonly IntPtr hAlgorithmProvider;
         private readonly IntPtr hKey;
         private readonly byte[] iv;
@@ -41,10 +41,59 @@ namespace Moosey.Cryptography.BCrypt
 
         public BCryptAesTransformer(BlockCipherMode mode, byte[] key, byte[] iv, bool isEncrypting)
         {
+            this.mode = mode;
+
             uint result = BCryptCore.BCryptOpenAlgorithmProvider(out this.hAlgorithmProvider, "AES", null, 0);
             if (result != 0)
             {
                 throw new SystemException("An error was encountered while opening the algorithm provider.");
+            }
+
+            string chainingModeValue;
+            switch (mode)
+            {
+                case BlockCipherMode.CBC:
+                    chainingModeValue = BCryptConstants.BCRYPT_CHAIN_MODE_CBC;
+                    break;
+
+                case BlockCipherMode.CCM:
+                    chainingModeValue = BCryptConstants.BCRYPT_CHAIN_MODE_CCM;
+                    break;
+
+                case BlockCipherMode.CFB:
+                    chainingModeValue = BCryptConstants.BCRYPT_CHAIN_MODE_CFB;
+                    break;
+
+                case BlockCipherMode.ECB:
+                    chainingModeValue = BCryptConstants.BCRYPT_CHAIN_MODE_ECB;
+                    break;
+
+                case BlockCipherMode.GCM:
+                    chainingModeValue = BCryptConstants.BCRYPT_CHAIN_MODE_GCM;
+                    break;
+
+                case BlockCipherMode.Unspecified:
+                    chainingModeValue = BCryptConstants.BCRYPT_CHAIN_MODE_NA;
+                    break;
+
+                default:
+                    throw new ArgumentException("The specified block cipher chaining mode is not recognized.", nameof(mode));
+            }
+
+            GCHandle gcChainingModeValue = GCHandle.Alloc(chainingModeValue, GCHandleType.Pinned);
+
+            try
+            {
+                result = BCryptCore.BCryptSetProperty(this.hAlgorithmProvider, BCryptConstants.BCRYPT_CHAINING_MODE, gcChainingModeValue.AddrOfPinnedObject(), (ulong)chainingModeValue.Length, 0);
+            }
+            finally
+            {
+                gcChainingModeValue.Free();
+            }
+
+            if (result != 0)
+            {
+                throw new SystemException("An error was encountered while setting the cipher chaining mode.");
             }
 
             result = BCryptCore.BCryptGenerateSymmetricKey(this.hAlgorithmProvider, out this.hKey, null, 0, key, (ulong)key.Length, 0);
@@ -81,21 +130,67 @@ namespace Moosey.Cryptography.BCrypt
             {
                 BCryptCore.BCryptDecrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, ivLength, output, (ulong)output.Length, out pcbResult, BCryptConstants.BCRYPT_NO_PADDING);
             }
+
+            if (pcbResult != 0)
+            {
+
+            }
         }
 
-        public void TransformFinalBlock(byte[] input, int inputOffset, byte[] output, int outputOffset, int count)
+        public byte[] TransformFinalBlock(byte[] input, int inputOffset, int count)
         {
-            ulong pcbResult;
             ulong ivLength = this.iv == null ? 0 : (ulong)this.iv.Length;
 
+            uint result;
+            ulong outputSize;
+
+            // Get the required size of the plaintext/ciphertext buffer
             if (this.isEncrypting)
             {
-                BCryptCore.BCryptEncrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, ivLength, output, (ulong)output.Length, out pcbResult, BCryptConstants.BCRYPT_BLOCK_PADDING);
+                result = BCryptCore.BCryptEncrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, ivLength, null, 0, out outputSize, BCryptConstants.BCRYPT_BLOCK_PADDING);
+                if (result != 0)
+                {
+                    throw new SystemException("An error was encountered while retrieving the ciphertext size.");
+                }
             }
             else
             {
-                BCryptCore.BCryptDecrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, ivLength, output, (ulong)output.Length, out pcbResult, BCryptConstants.BCRYPT_BLOCK_PADDING);
+                result = BCryptCore.BCryptDecrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, ivLength, null, 0, out outputSize, BCryptConstants.BCRYPT_BLOCK_PADDING);
+                if (result != 0)
+                {
+                    throw new SystemException("An error was encountered while retrieving the plaintext size.");
+                }
             }
+
+            byte[] output = new byte[outputSize];
+
+            // No padding is used with authenticatied modes
+            // Bypass final block transformation and defer to regular transformation
+            if (this.mode == BlockCipherMode.GCM || this.mode == BlockCipherMode.CCM)
+            {
+                this.TransformBlock(input, inputOffset, output, 0, count);
+                return output;
+            }
+
+            ulong pcbResult;
+            if (this.isEncrypting)
+            {
+                result = BCryptCore.BCryptEncrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, ivLength, output, (ulong)output.Length, out pcbResult, BCryptConstants.BCRYPT_BLOCK_PADDING);
+                if (result != 0)
+                {
+                    throw new SystemException("An error was encountered during encryption.");
+                }
+            }
+            else
+            {
+                result = BCryptCore.BCryptDecrypt(this.hKey, input, (ulong)count, IntPtr.Zero, this.iv, ivLength, output, (ulong)output.Length, out pcbResult, BCryptConstants.BCRYPT_BLOCK_PADDING);
+                if (result != 0)
+                {
+                    throw new SystemException("An error was encountered during decryption.");
+                }
+            }
+
+            return output;
         }
 
         public void Dispose()

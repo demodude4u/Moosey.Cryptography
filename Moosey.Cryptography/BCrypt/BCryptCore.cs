@@ -43,18 +43,12 @@ namespace Moosey.Cryptography.BCrypt
             [In] IntPtr hAlgorithm,
             [In] ulong dwFlags);
 
-        // https://msdn.microsoft.com/en-us/library/windows/desktop/aa375377(v=vs.85).aspx
-        [DllImport("bcrypt.dll")]
-        public static extern uint BCryptCloseAlgorithmProvider(
-            [In, Out] ref IntPtr hAlgorithm,
-            [In] ulong dwFlags);
-
         // https://msdn.microsoft.com/en-us/library/windows/desktop/aa375504(v=vs.85).aspx
         [DllImport("bcrypt.dll")]
         public static extern uint BCryptSetProperty(
-            [In, Out] ref IntPtr hObject,
+            [In] IntPtr hObject,
             [In, MarshalAs(UnmanagedType.LPWStr)] string pszProperty,
-            [In] byte[] pbInput,
+            [In] IntPtr pbInput,
             [In] ulong cbInput,
             [In] ulong dwFlags);
 
