@@ -49,52 +49,7 @@ namespace Moosey.Cryptography.BCrypt
                 throw new SystemException("An error was encountered while opening the algorithm provider.");
             }
 
-            string chainingModeValue;
-            switch (mode)
-            {
-                case BlockCipherMode.CBC:
-                    chainingModeValue = BCryptConstants.BCRYPT_CHAIN_MODE_CBC;
-                    break;
-
-                case BlockCipherMode.CCM:
-                    chainingModeValue = BCryptConstants.BCRYPT_CHAIN_MODE_CCM;
-                    break;
-
-                case BlockCipherMode.CFB:
-                    chainingModeValue = BCryptConstants.BCRYPT_CHAIN_MODE_CFB;
-                    break;
-
-                case BlockCipherMode.ECB:
-                    chainingModeValue = BCryptConstants.BCRYPT_CHAIN_MODE_ECB;
-                    break;
-
-                case BlockCipherMode.GCM:
-                    chainingModeValue = BCryptConstants.BCRYPT_CHAIN_MODE_GCM;
-                    break;
-
-                case BlockCipherMode.Unspecified:
-                    chainingModeValue = BCryptConstants.BCRYPT_CHAIN_MODE_NA;
-                    break;
-
-                default:
-                    throw new ArgumentException("The specified block cipher chaining mode is not recognized.", nameof(mode));
-            }
-
-            GCHandle gcChainingModeValue = GCHandle.Alloc(chainingModeValue, GCHandleType.Pinned);
-
-            try
-            {
-                result = BCryptCore.BCryptSetProperty(this.hAlgorithmProvider, BCryptConstants.BCRYPT_CHAINING_MODE, gcChainingModeValue.AddrOfPinnedObject(), (ulong)chainingModeValue.Length, 0);
-            }
-            finally
-            {
-                gcChainingModeValue.Free();
-            }
-
-            if (result != 0)
-            {
-                throw new SystemException("An error was encountered while setting the cipher chaining mode.");
-            }
+            BCryptHelper.SetBlockChainingMode(this.hAlgorithmProvider, mode);
 
             result = BCryptCore.BCryptGenerateSymmetricKey(this.hAlgorithmProvider, out this.hKey, null, 0, key, (ulong)key.Length, 0);
             if (result != 0)
